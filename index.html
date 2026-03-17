@@ -432,11 +432,65 @@
 </head>
 
 <body>
-<div style="text-align:center;margin-top:40px;">
-<input type="text" id="keyInput" placeholder="Nhập key của bạn">
-<button onclick="checkKey()">Login</button>
-</div>
-    <div class="container">
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyA0dK1mXKkz9lRxLJzLQ7wsTKQaYVAWz7o",
+  authDomain: "ktienxios-key-v2.firebaseapp.com",
+  databaseURL: "https://ktienxios-key-v2-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "ktienxios-key-v2"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+function loginKey(){
+
+Swal.fire({
+title: "KTIENXIOS LOGIN",
+text: "Nhập key để mở menu",
+input: "text",
+inputPlaceholder: "Nhập key của bạn...",
+allowOutsideClick:false,
+confirmButtonText:"Login",
+
+preConfirm: async (key)=>{
+
+const keyRef = ref(db,"keys/"+key);
+const snapshot = await get(keyRef);
+
+if(!snapshot.exists()){
+Swal.showValidationMessage("Key không hợp lệ!");
+}
+
+return key;
+
+}
+
+}).then((result)=>{
+
+if(result.isConfirmed){
+
+Swal.fire({
+title:"Đăng nhập thành công",
+icon:"success"
+});
+
+document.getElementById("menu").style.display="block";
+
+}
+
+});
+
+}
+
+loginKey();
+
+</script>
+    <div class="container" id="menu" style="display:none;">
         <div class="header">
             <h1 class="title">
                 <i class="fas fa-bars"></i> AIMLOCK MENU <i class="fas fa-bars"></i> 
