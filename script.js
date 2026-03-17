@@ -4,7 +4,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyA0dK1mXKkz9lRxLJzLQ7wsTKQaYVAWz7o",
+  apiKey: "AIzaSyA0dK1mXKkz9lRxLJzLJzLQ7wsTKQaYVAWz7o",
   authDomain: "ktienxios-key-v2.firebaseapp.com",
   databaseURL: "https://ktienxios-key-v2-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "ktienxios-key-v2",
@@ -19,23 +19,28 @@ const db = getDatabase(app);
 
 window.checkKey = function(){
 
-let key = document.getElementById("keyInput").value;
+let key = document.getElementById("keyInput").value.trim();
 
-const keyRef = ref(db, "keys/" + key);
+const keyRef = ref(db,"keys/" + key);
 
 get(keyRef).then((snapshot)=>{
 
-if(snapshot.exists()){
+if(snapshot.exists() && snapshot.val() === true){
 
 alert("Key hợp lệ");
 
-document.getElementById("menu").style.display = "block";
+document.getElementById("menu").style.display="block";
 
 }else{
 
-alert("Key không tồn tại");
+alert("Key không hợp lệ");
 
 }
+
+}).catch((error)=>{
+
+console.error(error);
+alert("Lỗi kết nối database");
 
 });
 
