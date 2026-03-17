@@ -436,7 +436,7 @@
 <input type="text" id="keyInput" placeholder="Nhập key của bạn">
 <button onclick="checkKey()">Login</button>
 </div>
-    <div class="container">
+    <div class="container" id="menu" style="display:none;">
         <div class="header">
             <h1 class="title">
                 <i class="fas fa-bars"></i> AIMLOCK MENU <i class="fas fa-bars"></i> 
@@ -530,39 +530,7 @@ KTIENXIOS 2.0 <i class="fas fa-bug"></i> </h2>
     <div class="particles" id="particles"></div>
 
    <script>
-
-const VALID_KEYS = [
-"KTIENXIOS-2026",
-"AIMLOCK-VIP",
-"FREEFIRE-PRO"
-];
-
-function checkLoginKey() {
-Swal.fire({
-title: 'KTIENXIOS LOGIN',
-text: 'Nhập Key để mở Menu',
-input: 'text',
-inputPlaceholder: 'Nhập key tại đây...',
-allowOutsideClick: false,
-confirmButtonText: 'Login',
-preConfirm: (key) => {
-if (!VALID_KEYS.includes(key)) {
-Swal.showValidationMessage('Key không hợp lệ!');
-}
-return key;
-}
-}).then((result) => {
-
-Swal.fire({
-title: 'Đăng nhập thành công',
-text: 'Chào mừng đến với AIMLOCK MENU',
-icon: 'success',
-confirmButtonText: 'Continue'
-});
-
-});
-}
-
+       
 class GameModInterface {
             constructor() {
                 this.terminal = document.getElementById('terminal');
@@ -887,7 +855,6 @@ class GameModInterface {
 `;
         document.head.appendChild(style);
         document.addEventListener('DOMContentLoaded', () => {
-checkLoginKey();
 new GameModInterface();
 });
         document.addEventListener('mousemove', (e) => {
@@ -920,6 +887,62 @@ new GameModInterface();
     }
 `;
         document.head.appendChild(trailStyle);
+
+</script>
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyA0dK1mXKkz9lRxLJzLQ7wsTKQaYVAWz7o",
+  authDomain: "ktienxios-key-v2.firebaseapp.com",
+  databaseURL: "https://ktienxios-key-v2-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "ktienxios-key-v2"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+window.checkKey = function(){
+
+let key = document.getElementById("keyInput").value;
+
+const keyRef = ref(db,"keys/"+key);
+
+get(keyRef).then((snapshot)=>{
+
+if(snapshot.exists()){
+
+Swal.fire({
+title: "Đăng nhập thành công",
+text: "Key hợp lệ",
+icon: "success"
+});
+
+document.getElementById("menu").style.display="block";
+
+}else{
+
+Swal.fire({
+title: "Đăng nhập thành công",
+text: "Key hợp lệ",
+icon: "success"
+});
+
+}else{
+
+Swal.fire({
+title: "Lỗi",
+text: "Key không hợp lệ",
+icon: "error"
+});
+
+}
+
+});
+
+}
 
 </script>
 </body>
