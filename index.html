@@ -435,7 +435,23 @@
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+function getDeviceID(){
+
+let id = localStorage.getItem("device_id");
+
+if(!id){
+
+id = "device_" + Math.random().toString(36).substring(2,12);
+
+localStorage.setItem("device_id", id);
+
+}
+
+return id;
+
+}
 
 const firebaseConfig = {
   apiKey: "AIzaSyA0dK1mXKkz9lRxLJzLQ7wsTKQaYVAWz7o",
