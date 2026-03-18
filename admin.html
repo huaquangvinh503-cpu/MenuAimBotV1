@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Admin Key Panel</title>
+</head>
+<body>
+
+<h2>Tạo Key</h2>
+
+<input id="key" placeholder="Nhập key">
+<input id="date" type="date">
+
+<button onclick="createKey()">Tạo Key</button>
+
+<h2>Xoá Key</h2>
+
+<input id="deleteKey" placeholder="Key cần xoá">
+<button onclick="deleteKey()">Xoá</button>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getDatabase, ref, set, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+const firebaseConfig = {
+apiKey:"AIzaSyA0dK1mXKkz9lRxLJzLQ7wsTKQaYVAWz7o",
+databaseURL:"https://ktienxios-key-v2-default-rtdb.asia-southeast1.firebasedatabase.app"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+window.createKey = function(){
+
+let key = document.getElementById("key").value;
+let date = document.getElementById("date").value;
+
+set(ref(db,"keys/"+key),{
+device:"",
+expire:date
+});
+
+alert("Đã tạo key");
+
+}
+
+window.deleteKey = function(){
+
+let key = document.getElementById("deleteKey").value;
+
+remove(ref(db,"keys/"+key));
+
+alert("Đã xoá key");
+
+}
+
+</script>
+
+</body>
+</html>
