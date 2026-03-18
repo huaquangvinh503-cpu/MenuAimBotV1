@@ -3,43 +3,32 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         * {
-margin:0;
-padding:0;
-box-sizing:border-box;
-}
-
-html, body {
-height:100%;
-overflow-x:hidden;
-}
-
-body {
-font-family:'Courier New', monospace;
-background:linear-gradient(135deg,#0c0c0c 0%,#1a1a2e 50%,#16213e 100%);
-color:#7700ff;
-min-height:100vh;
-overflow-x:hidden;
-position:relative;
-overscroll-behavior:none;
-}
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%);
+            color: #7700ff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
         
         .container {
-width:100%;
-min-height:100vh;
-padding:20px;
-position:relative;
-z-index:10;
-max-width:1400px;
-margin:auto;
-
-overflow-y:auto;
--webkit-overflow-scrolling:touch;
-}
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 10;
+        }
         
         .header {
             text-align: center;
@@ -446,23 +435,7 @@ overflow-y:auto;
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-
-function getDeviceID(){
-
-let id = localStorage.getItem("device_id");
-
-if(!id){
-
-id = "device_" + Math.random().toString(36).substring(2,12);
-
-localStorage.setItem("device_id", id);
-
-}
-
-return id;
-
-}
+import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyA0dK1mXKkz9lRxLJzLQ7wsTKQaYVAWz7o",
@@ -477,47 +450,20 @@ const db = getDatabase(app);
 function loginKey(){
 
 Swal.fire({
-title:"KTIENXIOS LOGIN",
-text:"Nhập key để mở menu",
-input:"text",
-inputPlaceholder:"Nhập key của bạn...",
+title: "KTIENXIOS LOGIN",
+text: "Nhập key để mở menu",
+input: "text",
+inputPlaceholder: "Nhập key của bạn...",
 allowOutsideClick:false,
 confirmButtonText:"Login",
 
 preConfirm: async (key)=>{
 
-const device = getDeviceID();
-
 const keyRef = ref(db,"keys/"+key);
-
 const snapshot = await get(keyRef);
 
 if(!snapshot.exists()){
-
-Swal.showValidationMessage("Key không tồn tại");
-
-return false;
-
-}
-
-let data = snapshot.val();
-
-if(!data.device){
-
-await set(keyRef,{
-device:device
-});
-
-return key;
-
-}
-
-if(data.device !== device){
-
-Swal.showValidationMessage("Key đã được dùng ở thiết bị khác");
-
-return false;
-
+Swal.showValidationMessage("Key không hợp lệ!");
 }
 
 return key;
@@ -561,28 +507,34 @@ KTIENXIOS 2.0 <i class="fas fa-bug"></i> </h2>
 
                 <div class="hack-buttons">
                     <button class="hack-btn" id="speedhack" data-hack="speed">
-<div class="btn-content">
-<i class="fas fa-gun"></i>
-<span class="btn-text">- AIMBOT </span>
-<div class="btn-glow"></div>
-</div>
-</button>
+                        <div class="btn-content">
+                            <i class="fas fa-gun"></i>
+                            <span class="btn-text">- AIMBOT </span>
+                            <div class="btn-glow"></div>
+                        </div>
+                    </button>
 
-<button class="hack-btn" id="unlimitedAmmo" data-hack="ammo">
-<div class="btn-content">
-<i class="fas fa-crosshairs"></i>
-<span class="btn-text">- AIMLOCK </span>
-<div class="btn-glow"></div>
-</div>
-</button>
+  <button class="hack-btn" id="unlimitedAmmo" data-hack="ammo">
+                        <div class="btn-content">
+                            <i class="fas fa-crosshairs"></i>
+                            <span class="btn-text">- AIMLOCK </span>
 
-<button class="hack-btn" id="infiniteHealth" data-hack="health">
-<div class="btn-content">
-<i class="fas fa-bolt"></i>
-<span class="btn-text">- Sensitivity</span>
-<div class="btn-glow"></div>
-</div>
-</button>
+
+                    <button class="hack-btn" id="infiniteHealth" data-hack="health">
+                        <div class="btn-content">
+                            <i class="fas fa-bolt"></i>
+                            <span class="btn-text">- Sensitivity</span>
+                            <div class="btn-glow"></div>
+                        </div>
+                    </button>
+
+                  
+                           
+                           
+                            <div class="btn-glow"></div>
+                        </div>
+                    </button>
+                </div>
             </div>
 
             <div class="terminal-panel">
@@ -643,7 +595,7 @@ class GameModInterface {
 
                 this.hackCommands = {
                     speed: [
-                        '[HKEY_CURRENT_USER\\Control Panel\\Accessibility\\On]',
+                        '[HKEY_CURRENT_USER\Control Panel\Accessibility\On]',
                         'from game_memory import GameProcess',
                         'initializing_speed_hack()',
                         'scanning_memory_addresses()',
@@ -664,7 +616,7 @@ class GameModInterface {
                         'SUCCESS: Speed hack is now active!'
                     ],
                     health: [
-                        '[HKEY_CURRENT_USER\\Control Panel\\Accessibility\\On]',
+                        '[HKEY_CURRENT_USER\Control Panel\Accessibility\On]',
                         'from memory_scanner import HealthPointer',
                         'initializing_health_hack()',
                         'scanning_for_health_values()',
@@ -989,6 +941,62 @@ new GameModInterface();
     }
 `;
         document.head.appendChild(trailStyle);
+
+</script>
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyA0dK1mXKkz9lRxLJzLQ7wsTKQaYVAWz7o",
+  authDomain: "ktienxios-key-v2.firebaseapp.com",
+  databaseURL: "https://ktienxios-key-v2-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "ktienxios-key-v2"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+window.checkKey = function(){
+
+let key = document.getElementById("keyInput").value;
+
+const keyRef = ref(db,"keys/"+key);
+
+get(keyRef).then((snapshot)=>{
+
+if(snapshot.exists()){
+
+Swal.fire({
+title: "Đăng nhập thành công",
+text: "Key hợp lệ",
+icon: "success"
+});
+
+document.getElementById("menu").style.display="block";
+
+}else{
+
+Swal.fire({
+title: "Đăng nhập thành công",
+text: "Key hợp lệ",
+icon: "success"
+});
+
+}else{
+
+Swal.fire({
+title: "Lỗi",
+text: "Key không hợp lệ",
+icon: "error"
+});
+
+}
+
+});
+
+}
 
 </script>
 </body>
