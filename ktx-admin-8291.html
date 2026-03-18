@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KTIENXIOS ADMIN</title>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style>
+
+body{
+background:#0f0f1a;
+font-family:Arial;
+color:white;
+padding:30px;
+}
+
+h1{
+text-align:center;
+color:#a200ff;
+}
+
+.panel{
+background:#1b1b2b;
+padding:20px;
+border-radius:10px;
+margin-bottom:20px;
+}
+
+button{
+padding:10px 15px;
+border:none;
+border-radius:6px;
+cursor:pointer;
+background:#a200ff;
+color:white;
+font-weight:bold;
+margin:5px;
+}
+
+.keyBox{
+background:#111;
+padding:10px;
+margin:10px 0;
+border-radius:6px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.keyName{
+color:#00ffcc;
+font-weight:bold;
+}
+
+.stat{
+font-size:20px;
+color:#00ffcc;
+}
+
+</style>
+</head>
+<body>
+<div id="login">
+<h1>ADMIN LOGIN</h1>
+<input id="password" type="password" placeholder="Admin Password">
+<button onclick="login()">Login</button>
+</div>
+<div id="adminPanel" style="display:none;">
+<h1>KTIENXIOS ADMIN PANEL</h1>
+<div class="panel">
+<h3>Thống kê</h3>
+<div class="stat">Tổng key: <span id="totalKeys">0</span></div>
+<div class="stat">Key đang dùng: <span id="activeUsers">0</span></div>
+</div>
+<div class="panel">
+<h3>Tạo Key</h3>
+<button onclick="create100()">Tạo 100 Key</button>
+<button onclick="createKey(1)">Key 1 ngày</button>
+<button onclick="createKey(7)">Key 7 ngày</button>
+<button onclick="createKey(30)">Key 30 ngày</button>
+</div>
+<div class="panel">
+<h3>Danh sách key</h3>
+<div id="keyList"></div>
+</div>
+</div>
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+getDatabase,
+ref,
+set,
+get,
+remove
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+
+const firebaseConfig = {
+
+apiKey: "AIzaSyA0dK1mXKkz9lRxLJzLQ7wsTKQaYVAWz7o",
+authDomain: "ktienxios-key-v2.firebaseapp.com",
+databaseURL: "https://ktienxios-key-v2-default-rtdb.asia-southeast1.firebasedatabase.app",
+projectId: "ktienxios-key-v2"
+
+};
+
+
+const app = initializeApp(firebaseConfig);
+
+const db = getDatabase(app);
+
+
+
+const ADMIN_PASSWORD="ktienxios999";
+const ADMIN_KEY="ktxadmin";
+
+window.login=function(){
+
+let pass=document.getElementById("password").value;
+
+if(pass===ADMIN_PASSWORD){
+
+document.getElementById("login").style.display="none";
+document.getElementById("adminPanel").style.display="block";
+
+loadKeys();
+
+}else{
+
+Swal.fire("Sai mật khẩu");
+
+}
+
+}
+
+document.getElementById("login").style.display="none";
+
+document.getElementById("adminPanel").style.display="block";
+
+loadKeys();
+
+}else{
+
+alert("Sai mật khẩu");
+
+}
+
+}
+
+
+
+function randomKey(){
+return "VIP-"+Math.random().toString(36).substring(2,10).toUpperCase();
+}
+
+
+window.createKey=async function(days){
+
+let key=randomKey();
+
+let date=new Date();
+
+date.setDate(date.getDate()+days);
+
+let expire=date.toISOString().split("T")[0];
+
+await set(ref(db,"keys/"+key),{
+
+device:"",
+expire:expire
+
+});
+
+Swal.fire({
+title:"Đã tạo key",
+text:key,
+confirmButtonText:"Copy Key"
+}).then(()=>{
+navigator.clipboard.writeText(key);
+});
+
+loadKeys();
+
+}
+window.create100 = async function(){
+
+for(let i=0;i<100;i++){
+
+let key = randomKey();
+
+let date = new Date();
+date.setDate(date.getDate()+30);
+
+let expire = date.toISOString().split("T")[0];
+
+await set(ref(db,"keys/"+key),{
+device:"",
+expire:expire
+});
+
+}
+
+Swal.fire("Đã tạo 100 key");
+loadKeys();
+document.getElementById("keyList").scrollIntoView();
+
+}
+
+
+async function loadKeys(){
+
+const snapshot=await get(ref(db,"keys"));
+
+const list=document.getElementById("keyList");
+
+list.innerHTML="";
+
+let total=0;
+let active=0;
+
+if(!snapshot.exists()){
+
+list.innerHTML="Không có key";
+
+return;
+
+}
+
+snapshot.forEach(child=>{
+
+const key = child.key;
+const data = child.val();
+
+if(data.device){
+active++;
+}
+
+total++;
+
+const div=document.createElement("div");
+
+div.className="keyBox";
+
+div.innerHTML=`
+<div>
+
+<div style="font-size:18px;color:#00ffcc;font-weight:bold">
+KEY: ${key}
+</div>
+
+<div>
+Expire: ${data.expire}
+</div>
+
+<div>
+Device: ${data.device || "Chưa dùng"} <br>
+IP: ${data.ip || "Chưa login"}
+</div>
+
+</div>
+
+<div>
+
+<button onclick="copyKey('${key}')">Copy</button>
+
+<button onclick="resetDevice('${key}')">Reset</button>
+
+<button onclick="deleteKey('${key}')">Delete</button>
+
+</div>
+
+`;
+
+list.appendChild(div);
+
+});
+
+document.getElementById("totalKeys").innerText = total;
+document.getElementById("activeUsers").innerText = active;
+
+}
+
+
+
+window.copyKey=function(key){
+
+navigator.clipboard.writeText(key);
+
+Swal.fire({
+icon:"success",
+title:"Đã copy key"
+});
+
+}
+
+
+
+window.resetDevice=async function(key){
+
+await set(ref(db,"keys/"+key+"/device"),"");
+
+Swal.fire("Đã reset device");
+
+}
+
+
+
+window.deleteKey=async function(key){
+
+await remove(ref(db,"keys/"+key));
+
+Swal.fire("Đã xoá key");
+
+loadKeys();
+
+}
+
+</script>
+</body>
+</html>
+:::
