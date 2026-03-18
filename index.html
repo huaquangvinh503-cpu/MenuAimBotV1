@@ -447,23 +447,52 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
+import { set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
 function loginKey(){
 
 Swal.fire({
-title: "KTIENXIOS LOGIN",
-text: "Nhập key để mở menu",
-input: "text",
-inputPlaceholder: "Nhập key của bạn...",
+title:"KTIENXIOS LOGIN",
+text:"Nhập key để mở menu",
+input:"text",
+inputPlaceholder:"Nhập key của bạn...",
 allowOutsideClick:false,
 confirmButtonText:"Login",
 
 preConfirm: async (key)=>{
 
+const device = getDeviceID();
+
 const keyRef = ref(db,"keys/"+key);
+
 const snapshot = await get(keyRef);
 
 if(!snapshot.exists()){
-Swal.showValidationMessage("Key không hợp lệ!");
+
+Swal.showValidationMessage("Key không tồn tại");
+
+return false;
+
+}
+
+let data = snapshot.val();
+
+if(!data.device){
+
+await set(keyRef,{
+device:device
+});
+
+return key;
+
+}
+
+if(data.device !== device){
+
+Swal.showValidationMessage("Key đã được dùng ở thiết bị khác");
+
+return false;
+
 }
 
 return key;
