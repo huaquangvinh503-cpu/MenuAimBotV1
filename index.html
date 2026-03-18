@@ -435,7 +435,7 @@
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyA0dK1mXKkz9lRxLJzLQ7wsTKQaYVAWz7o",
@@ -447,23 +447,77 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
+function getDeviceID(){
+
+let id = localStorage.getItem("device_id");
+
+if(!id){
+id = "device_" + Math.random().toString(36).substring(2,12);
+localStorage.setItem("device_id", id);
+}
+
+return id;
+}
 function loginKey(){
 
 Swal.fire({
-title: "KTIENXIOS LOGIN",
-text: "Nhập key để mở menu",
-input: "text",
-inputPlaceholder: "Nhập key của bạn...",
+title:"KTIENXIOS LOGIN",
+text:"Nhập key để mở menu",
+input:"text",
+inputPlaceholder:"Nhập key của bạn...",
 allowOutsideClick:false,
 confirmButtonText:"Login",
 
 preConfirm: async (key)=>{
 
+if(!key){
+Swal.showValidationMessage("Vui lòng nhập key");
+return false;
+}
+
+const device = getDeviceID();
+
 const keyRef = ref(db,"keys/"+key);
+
 const snapshot = await get(keyRef);
 
 if(!snapshot.exists()){
-Swal.showValidationMessage("Key không hợp lệ!");
+
+Swal.showValidationMessage("Key không tồn tại");
+
+return false;
+
+}
+
+let data = snapshot.val();
+
+const today = new Date().toISOString().split("T")[0];
+
+if(data.expire && today > data.expire){
+
+Swal.showValidationMessage("Key đã hết hạn");
+
+return false;
+
+}
+
+if(!data.device){
+
+await set(keyRef,{
+...data,
+device:device
+});
+
+return key;
+
+}
+
+if(data.device !== device){
+
+Swal.showValidationMessage("Key đã được dùng ở thiết bị khác");
+
+return false;
+
 }
 
 return key;
@@ -487,7 +541,6 @@ document.getElementById("statusbar").style.display="flex";
 });
 
 }
-
 loginKey();
 
 </script>
@@ -949,22 +1002,6 @@ new GameModInterface();
     }
 `;
         document.head.appendChild(trailStyle);
-
-</script>
-<script type="module">
-
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyA0dK1mXKkz9lRxLJzLQ7wsTKQaYVAWz7o",
-  authDomain: "ktienxios-key-v2.firebaseapp.com",
-  databaseURL: "https://ktienxios-key-v2-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "ktienxios-key-v2"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
 
 </script>
 </body>
