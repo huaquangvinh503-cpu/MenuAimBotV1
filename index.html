@@ -463,8 +463,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-import { set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-
 function loginKey(){
 
 Swal.fire({
@@ -552,34 +550,28 @@ KTIENXIOS 2.0 <i class="fas fa-bug"></i> </h2>
 
                 <div class="hack-buttons">
                     <button class="hack-btn" id="speedhack" data-hack="speed">
-                        <div class="btn-content">
-                            <i class="fas fa-gun"></i>
-                            <span class="btn-text">- AIMBOT </span>
-                            <div class="btn-glow"></div>
-                        </div>
-                    </button>
+<div class="btn-content">
+<i class="fas fa-gun"></i>
+<span class="btn-text">- AIMBOT </span>
+<div class="btn-glow"></div>
+</div>
+</button>
 
-  <button class="hack-btn" id="unlimitedAmmo" data-hack="ammo">
-                        <div class="btn-content">
-                            <i class="fas fa-crosshairs"></i>
-                            <span class="btn-text">- AIMLOCK </span>
+<button class="hack-btn" id="unlimitedAmmo" data-hack="ammo">
+<div class="btn-content">
+<i class="fas fa-crosshairs"></i>
+<span class="btn-text">- AIMLOCK </span>
+<div class="btn-glow"></div>
+</div>
+</button>
 
-
-                    <button class="hack-btn" id="infiniteHealth" data-hack="health">
-                        <div class="btn-content">
-                            <i class="fas fa-bolt"></i>
-                            <span class="btn-text">- Sensitivity</span>
-                            <div class="btn-glow"></div>
-                        </div>
-                    </button>
-
-                  
-                           
-                           
-                            <div class="btn-glow"></div>
-                        </div>
-                    </button>
-                </div>
+<button class="hack-btn" id="infiniteHealth" data-hack="health">
+<div class="btn-content">
+<i class="fas fa-bolt"></i>
+<span class="btn-text">- Sensitivity</span>
+<div class="btn-glow"></div>
+</div>
+</button>
             </div>
 
             <div class="terminal-panel">
@@ -640,7 +632,7 @@ class GameModInterface {
 
                 this.hackCommands = {
                     speed: [
-                        '[HKEY_CURRENT_USER\Control Panel\Accessibility\On]',
+                        '[HKEY_CURRENT_USER\\Control Panel\\Accessibility\\On]',
                         'from game_memory import GameProcess',
                         'initializing_speed_hack()',
                         'scanning_memory_addresses()',
@@ -661,7 +653,7 @@ class GameModInterface {
                         'SUCCESS: Speed hack is now active!'
                     ],
                     health: [
-                        '[HKEY_CURRENT_USER\Control Panel\Accessibility\On]',
+                        '[HKEY_CURRENT_USER\\Control Panel\\Accessibility\\On]',
                         'from memory_scanner import HealthPointer',
                         'initializing_health_hack()',
                         'scanning_for_health_values()',
@@ -986,62 +978,6 @@ new GameModInterface();
     }
 `;
         document.head.appendChild(trailStyle);
-
-</script>
-<script type="module">
-
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyA0dK1mXKkz9lRxLJzLQ7wsTKQaYVAWz7o",
-  authDomain: "ktienxios-key-v2.firebaseapp.com",
-  databaseURL: "https://ktienxios-key-v2-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "ktienxios-key-v2"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-
-window.checkKey = function(){
-
-let key = document.getElementById("keyInput").value;
-
-const keyRef = ref(db,"keys/"+key);
-
-get(keyRef).then((snapshot)=>{
-
-if(snapshot.exists()){
-
-Swal.fire({
-title: "Đăng nhập thành công",
-text: "Key hợp lệ",
-icon: "success"
-});
-
-document.getElementById("menu").style.display="block";
-
-}else{
-
-Swal.fire({
-title: "Đăng nhập thành công",
-text: "Key hợp lệ",
-icon: "success"
-});
-
-}else{
-
-Swal.fire({
-title: "Lỗi",
-text: "Key không hợp lệ",
-icon: "error"
-});
-
-}
-
-});
-
-}
 
 </script>
 </body>
