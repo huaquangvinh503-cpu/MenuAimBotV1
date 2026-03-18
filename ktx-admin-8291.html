@@ -114,7 +114,6 @@ const db = getDatabase(app);
 
 
 const ADMIN_PASSWORD="ktienxios999";
-const ADMIN_KEY="ktxadmin";
 
 window.login=function(){
 
@@ -134,22 +133,6 @@ Swal.fire("Sai mật khẩu");
 }
 
 }
-
-document.getElementById("login").style.display="none";
-
-document.getElementById("adminPanel").style.display="block";
-
-loadKeys();
-
-}else{
-
-alert("Sai mật khẩu");
-
-}
-
-}
-
-
 
 function randomKey(){
 return "VIP-"+Math.random().toString(36).substring(2,10).toUpperCase();
@@ -247,7 +230,13 @@ div.innerHTML=`
 <div>
 
 <div style="font-size:18px;color:#00ffcc;font-weight:bold">
-KEY: ${key}
+
+KEY: <span id="key-${key}" data-key="${key}">••••••••</span>
+
+<button onclick="toggleKey('${key}')" style="margin-left:10px">
+👁
+</button>
+
 </div>
 
 <div>
@@ -314,6 +303,21 @@ await remove(ref(db,"keys/"+key));
 Swal.fire("Đã xoá key");
 
 loadKeys();
+
+}
+window.toggleKey=function(key){
+
+let el=document.getElementById("key-"+key);
+
+if(el.innerText==="••••••••"){
+
+el.innerText=el.dataset.key;
+
+}else{
+
+el.innerText="••••••••";
+
+}
 
 }
 
