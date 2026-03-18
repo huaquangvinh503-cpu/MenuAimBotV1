@@ -480,6 +480,7 @@ icon:"success"
 });
 
 document.getElementById("menu").style.display="block";
+document.getElementById("statusbar").style.display="flex";
 
 }
 
@@ -565,7 +566,7 @@ KTIENXIOS 2.0 <i class="fas fa-bug"></i> </h2>
             </div>
         </div>
 
-        <div class="status-bar">
+        <div class="status-bar" id="statusbar" style="display:none;">
             <div class="status-item">
                 <i class="fas fa-phone"></i>
                 <span>ZaLo: +84 782-275-997</span>
@@ -595,7 +596,7 @@ class GameModInterface {
 
                 this.hackCommands = {
                     speed: [
-                        '[HKEY_CURRENT_USER\Control Panel\Accessibility\On]',
+                        '[HKEY_CURRENT_USER\\Control Panel\\Accessibility\\On]',
                         'from game_memory import GameProcess',
                         'initializing_speed_hack()',
                         'scanning_memory_addresses()',
@@ -616,7 +617,7 @@ class GameModInterface {
                         'SUCCESS: Speed hack is now active!'
                     ],
                     health: [
-                        '[HKEY_CURRENT_USER\Control Panel\Accessibility\On]',
+                        '[HKEY_CURRENT_USER\\Control Panel\\Accessibility\\On]',
                         'from memory_scanner import HealthPointer',
                         'initializing_health_hack()',
                         'scanning_for_health_values()',
@@ -853,18 +854,25 @@ class GameModInterface {
                 }, 600);
             }
 
-            createParticles() {
-                const particlesContainer = document.getElementById('particles');
+            createParticles(){
 
-                for (let i = 0; i < 50; i++) {
-                    setTimeout(() => {
-                        this.createParticle(particlesContainer);
-                    }, i * 200);
-                }
-                setInterval(() => {
-                    this.createParticle(particlesContainer);
-                }, 2000);
-            }
+const particlesContainer = document.getElementById('particles');
+
+for(let i=0;i<40;i++){
+
+const particle = document.createElement('div');
+
+particle.className='particle';
+
+particle.style.left=Math.random()*100+'%';
+
+particle.style.animationDuration=(Math.random()*10+10)+'s';
+
+particlesContainer.appendChild(particle);
+
+}
+
+}
 
             createParticle(container) {
                 const particle = document.createElement('div');
@@ -957,46 +965,6 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
-
-window.checkKey = function(){
-
-let key = document.getElementById("keyInput").value;
-
-const keyRef = ref(db,"keys/"+key);
-
-get(keyRef).then((snapshot)=>{
-
-if(snapshot.exists()){
-
-Swal.fire({
-title: "Đăng nhập thành công",
-text: "Key hợp lệ",
-icon: "success"
-});
-
-document.getElementById("menu").style.display="block";
-
-}else{
-
-Swal.fire({
-title: "Đăng nhập thành công",
-text: "Key hợp lệ",
-icon: "success"
-});
-
-}else{
-
-Swal.fire({
-title: "Lỗi",
-text: "Key không hợp lệ",
-icon: "error"
-});
-
-}
-
-});
-
-}
 
 </script>
 </body>
